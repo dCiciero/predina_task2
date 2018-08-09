@@ -1,0 +1,10 @@
+body {
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+.mapview{
+    /* background-image: url(UK.svg);
+    background-repeat: no-repeat; */
+    height: 700px;
+}
