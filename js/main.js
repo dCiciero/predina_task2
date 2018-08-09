@@ -16,19 +16,19 @@ var carIcon = L.icon({
 
 let coordinates = [];
 let signal;
-let currentHour=4;
-var currentMinute=54;
+let currentHour=5;
+var currentMinute=0;
 
 setInterval(() => {
     loadCoord(100);
-},60000)
+},500)
 
 function displayCoord(coordinates) {
     L.marker([coordinates[2],coordinates[3]], {icon: carIcon, title: coordinates[1]}).addTo(map); 
 }
 
 function loadCoord(numberOfCordinates) {
-    currentMinute++;
+    
     currentHour > 23 ? currentHour = 0 : currentHour;
     if (currentMinute > 59) {
         currentHour++;
@@ -56,4 +56,5 @@ function loadCoord(numberOfCordinates) {
             break;
        }
     });
+    currentMinute++;
 }
