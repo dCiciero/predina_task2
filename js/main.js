@@ -14,47 +14,68 @@ var carIcon = L.icon({
     popupAnchor:  [-3, -76] 
 });
 
-let coordinates = [];
-let signal;
-let currentHour=5;
-var currentMinute=0;
+let time = "";
+let coordinates = [], display = [];
+let currentHour=5, currentMinute=0, currentDisplay = 0, maxDiaplay = 20;
+let group = L.layerGroup();
+let marker;
 
-setInterval(() => {
-    loadCoord(100);
-},500)
 
 function displayCoord(coordinates) {
-    L.marker([coordinates[2],coordinates[3]], {icon: carIcon, title: coordinates[1]}).addTo(map); 
+    marker = L.marker([coordinates[2],coordinates[3]], {icon: carIcon, title: coordinates[1]}); 
+    group.addLayer(marker);
+    
 }
 
-function loadCoord(numberOfCordinates) {
-    
+function loadCoord() {
+    let cnt = 0;
     currentHour > 23 ? currentHour = 0 : currentHour;
     if (currentMinute > 59) {
         currentHour++;
         currentMinute = 0;
     }
-    let time= (currentHour > 23 && currentMinute >59)    ? '00:00':
+    time = (currentHour > 23 && currentMinute >59)    ? '00:00':
             (currentHour > 23 && currentMinute <=59)  ? `00:${currentMinute}`:
             (currentHour < 10 && currentMinute < 10)  ? `0${currentHour}:0${currentMinute}`:
             (currentHour > 10 && currentMinute < 10)  ? `${currentHour}:0${currentMinute}`:
             (currentHour < 10 && currentMinute > 10)  ? `0${currentHour}:${currentMinute}`:
                                                         `${currentHour}:${currentMinute}`;
+    
+   
     d3.csv("data/realtimelocation.csv", function (data) {
-       while (numberOfCordinates > 0) {
-        let entry = Object.values(data);
-            
-           if (entry[0] == `${time}`) {
-            coordinates[0] = entry[0];
-            coordinates[1] = entry[1];
-            coordinates[2] = parseFloat(entry[2]);
-            coordinates[3] = parseFloat(entry[3]);
-            displayCoord(coordinates);
-           }
-           
-            numberOfCordinates--;
-            break;
-       }
+        for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+                const element = data[key];
+                if (element == time) {
+                    
+                    while (currentDisplay < maxDiaplay) {
+                        coordinates[0] = data.Time;
+                        coordinates[1] = data.Vehicle;
+                        coordinates[2] = parseFloat(data.Latitude);
+                        coordinates[3] = parseFloat(data.Longitude);
+                        displayCoord(coordinates);
+                        currentDisplay++;
+                        break;
+                    }
+                } 
+            }
+        }
     });
+
+    
+    group.eachLayer(layer => {
+        group.removeLayer(layer);
+    });
+
+    group.addTo(map);
     currentMinute++;
+    currentDisplay = 0;
+    coordinates = [];
+    
 }
+loadCoord();
+setInterval(() => {
+    loadCoord();
+    
+},60000)
+
