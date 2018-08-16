@@ -9,14 +9,14 @@ L.tileLayer(`https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=$
 var carIcon = L.icon({
     iconUrl: 'img/cab.png',
 
-    iconSize:     [35, 35], 
-    iconAnchor:   [22, 94],
+    iconSize:     [30, 30], 
+    iconAnchor:   [30, 30],
     popupAnchor:  [-3, -76] 
 });
 
 let time = "", vehicle = "Vehicle_847" ;
 let coordinates = [], display = [];
-let currentHour=14, currentMinute=52, currentDisplay = 0, maxDiaplay = 1;
+let currentHour=14, currentMinute=52, currentDisplay = 0, maxDisplay = 1;
 let group = L.layerGroup();
 let marker;
 
@@ -48,7 +48,7 @@ function loadCoord() {
                 const element = data[key];
                 if (element == time) {
                     if (data.Vehicle == vehicle) {
-                        while (currentDisplay < maxDiaplay) {
+                        while (currentDisplay < maxDisplay) {
                             coordinates[0] = data.Time;
                             coordinates[1] = data.Vehicle;
                             coordinates[2] = parseFloat(data.Latitude);
